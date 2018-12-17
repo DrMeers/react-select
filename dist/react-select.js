@@ -776,13 +776,14 @@
         className = props.className,
         cx = props.cx,
         getStyles = props.getStyles,
+        innerRef = props.innerRef,
         innerProps = props.innerProps;
 
     var cn = cx( /*#__PURE__*/emotion.css(getStyles('menu', props)), { menu: true }, className);
 
     return React__default.createElement(
       'div',
-      _extends({ className: cn }, innerProps),
+      _extends({ className: cn }, innerProps, { ref: innerRef }),
       children
     );
   };
@@ -1851,8 +1852,7 @@
 
   var dropdownIndicatorCSS = baseCSS;
   var DropdownIndicator = function DropdownIndicator(props) {
-    var _props$children = props.children,
-        children = _props$children === undefined ? React__default.createElement(DownChevron, null) : _props$children,
+    var children = props.children,
         className = props.className,
         cx = props.cx,
         getStyles = props.getStyles,
@@ -1869,11 +1869,13 @@
       children
     );
   };
+  DropdownIndicator.defaultProps = {
+    children: React__default.createElement(DownChevron, null)
+  };
 
   var clearIndicatorCSS = baseCSS;
   var ClearIndicator = function ClearIndicator(props) {
-    var _props$children2 = props.children,
-        children = _props$children2 === undefined ? React__default.createElement(CrossIcon, null) : _props$children2,
+    var children = props.children,
         className = props.className,
         cx = props.cx,
         getStyles = props.getStyles,
@@ -1889,6 +1891,10 @@
       }),
       children
     );
+  };
+
+  ClearIndicator.defaultProps = {
+    children: React__default.createElement(CrossIcon, null)
   };
 
   // ==============================
@@ -2106,10 +2112,11 @@
     var className = props.className,
         cx = props.cx,
         getStyles = props.getStyles,
-        cleanProps = objectWithoutProperties(props, ['className', 'cx', 'getStyles']);
+        theme = props.theme,
+        cleanProps = objectWithoutProperties(props, ['className', 'cx', 'getStyles', 'theme']);
 
     return React__default.createElement('div', _extends({
-      className: cx( /*#__PURE__*/emotion.css(getStyles('groupHeading', props)), { 'group-heading': true }, className)
+      className: cx( /*#__PURE__*/emotion.css(getStyles('groupHeading', _extends({ theme: theme }, cleanProps))), { 'group-heading': true }, className)
     }, cleanProps));
   };
 
@@ -2145,11 +2152,12 @@
         innerRef = _ref2.innerRef,
         isHidden = _ref2.isHidden,
         isDisabled = _ref2.isDisabled,
-        props = objectWithoutProperties(_ref2, ['className', 'cx', 'getStyles', 'innerRef', 'isHidden', 'isDisabled']);
+        theme = _ref2.theme,
+        props = objectWithoutProperties(_ref2, ['className', 'cx', 'getStyles', 'innerRef', 'isHidden', 'isDisabled', 'theme']);
     return React__default.createElement(
       'div',
       {
-        className: emotion.css(getStyles('input', props))
+        className: emotion.css(getStyles('input', _extends({ theme: theme }, props)))
       },
       React__default.createElement(AutosizeInput, _extends({
         className: cx(null, { 'input': true }, className),
@@ -2541,17 +2549,17 @@
     danger: '#DE350B',
     dangerLight: '#FFBDAD',
 
-    neutral0: 'hsl(218, 0%, 100%)',
-    neutral5: 'hsl(218, 5%, 95%)',
-    neutral10: 'hsl(218, 10%, 90%)',
-    neutral20: 'hsl(218, 15%, 80%)',
-    neutral30: 'hsl(218, 20%, 70%)',
-    neutral40: 'hsl(218, 25%, 60%)',
-    neutral50: 'hsl(218, 30%, 50%)',
-    neutral60: 'hsl(218, 35%, 40%)',
-    neutral70: 'hsl(218, 40%, 30%)',
-    neutral80: 'hsl(218, 45%, 20%)',
-    neutral90: 'hsl(218, 50%, 10%)'
+    neutral0: 'hsl(0, 0%, 100%)',
+    neutral5: 'hsl(0, 0%, 95%)',
+    neutral10: 'hsl(0, 0%, 90%)',
+    neutral20: 'hsl(0, 0%, 80%)',
+    neutral30: 'hsl(0, 0%, 70%)',
+    neutral40: 'hsl(0, 0%, 60%)',
+    neutral50: 'hsl(0, 0%, 50%)',
+    neutral60: 'hsl(0, 0%, 40%)',
+    neutral70: 'hsl(0, 0%, 30%)',
+    neutral80: 'hsl(0, 0%, 20%)',
+    neutral90: 'hsl(0, 0%, 10%)'
   };
 
   var borderRadius = 4;
@@ -3278,6 +3286,7 @@
             onChange: noop,
             onFocus: this.onInputFocus,
             readOnly: true,
+            disabled: isDisabled,
             tabIndex: tabIndex,
             value: ''
           });
@@ -3336,13 +3345,18 @@
             placeholder = _props8.placeholder;
         var _state6 = this.state,
             selectValue = _state6.selectValue,
-            focusedValue = _state6.focusedValue;
+            focusedValue = _state6.focusedValue,
+            isFocused = _state6.isFocused;
 
 
         if (!this.hasValue() || !controlShouldRenderValue) {
           return inputValue ? null : React__default.createElement(
             Placeholder,
-            _extends({}, commonProps, { key: 'placeholder', isDisabled: isDisabled }),
+            _extends({}, commonProps, {
+              key: 'placeholder',
+              isDisabled: isDisabled,
+              isFocused: isFocused
+            }),
             placeholder
           );
         }
@@ -3578,16 +3592,17 @@
             _message
           );
         }
+        var menuPlacementProps = {
+          minMenuHeight: minMenuHeight,
+          maxMenuHeight: maxMenuHeight,
+          menuPlacement: menuPlacement,
+          menuPosition: menuPosition,
+          menuShouldScrollIntoView: menuShouldScrollIntoView
+        };
 
         var menuElement = React__default.createElement(
           MenuPlacer,
-          _extends({}, commonProps, {
-            minMenuHeight: minMenuHeight,
-            maxMenuHeight: maxMenuHeight,
-            menuPlacement: menuPlacement,
-            menuPosition: menuPosition,
-            menuShouldScrollIntoView: menuShouldScrollIntoView
-          }),
+          _extends({}, commonProps, menuPlacementProps),
           function (_ref2) {
             var ref = _ref2.ref,
                 _ref2$placerProps = _ref2.placerProps,
@@ -3595,9 +3610,9 @@
                 maxHeight = _ref2$placerProps.maxHeight;
             return React__default.createElement(
               Menu$$1,
-              _extends({}, commonProps, {
+              _extends({}, commonProps, menuPlacementProps, {
+                innerRef: ref,
                 innerProps: {
-                  ref: ref,
                   onMouseDown: _this5.onMenuMouseDown,
                   onMouseMove: _this5.onMenuMouseMove
                 },
@@ -3824,13 +3839,20 @@
     this.focus = this.focusInput;
     this.blur = this.blurInput;
 
+    this.onChange = function (newValue, actionMeta) {
+      var _props14 = _this7.props,
+          onChange = _props14.onChange,
+          name = _props14.name;
+
+      onChange(newValue, _extends({}, actionMeta, { name: name }));
+    };
+
     this.setValue = function (newValue) {
       var action = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'set-value';
       var option = arguments[2];
-      var _props14 = _this7.props,
-          closeMenuOnSelect = _props14.closeMenuOnSelect,
-          isMulti = _props14.isMulti,
-          onChange = _props14.onChange;
+      var _props15 = _this7.props,
+          closeMenuOnSelect = _props15.closeMenuOnSelect,
+          isMulti = _props15.isMulti;
 
       _this7.onInputChange('', { action: 'set-value' });
       if (closeMenuOnSelect) {
@@ -3839,13 +3861,13 @@
       }
       // when the select value should change, we should reset focusedValue
       _this7.clearFocusValueOnUpdate = true;
-      onChange(newValue, { action: action, option: option });
+      _this7.onChange(newValue, { action: action, option: option });
     };
 
     this.selectOption = function (newValue) {
-      var _props15 = _this7.props,
-          blurInputOnSelect = _props15.blurInputOnSelect,
-          isMulti = _props15.isMulti;
+      var _props16 = _this7.props,
+          blurInputOnSelect = _props16.blurInputOnSelect,
+          isMulti = _props16.isMulti;
 
 
       if (isMulti) {
@@ -3881,11 +3903,10 @@
     };
 
     this.removeValue = function (removedValue) {
-      var onChange = _this7.props.onChange;
       var selectValue = _this7.state.selectValue;
 
       var candidate = _this7.getOptionValue(removedValue);
-      onChange(selectValue.filter(function (i) {
+      _this7.onChange(selectValue.filter(function (i) {
         return _this7.getOptionValue(i) !== candidate;
       }), {
         action: 'remove-value',
@@ -3901,15 +3922,12 @@
     };
 
     this.clearValue = function () {
-      var _props16 = _this7.props,
-          isMulti = _props16.isMulti,
-          onChange = _props16.onChange;
+      var isMulti = _this7.props.isMulti;
 
-      onChange(isMulti ? [] : null, { action: 'clear' });
+      _this7.onChange(isMulti ? [] : null, { action: 'clear' });
     };
 
     this.popValue = function () {
-      var onChange = _this7.props.onChange;
       var selectValue = _this7.state.selectValue;
 
       var lastSelectedValue = selectValue[selectValue.length - 1];
@@ -3919,7 +3937,7 @@
           value: lastSelectedValue ? _this7.getOptionLabel(lastSelectedValue) : undefined
         }
       });
-      onChange(selectValue.slice(0, selectValue.length - 1), {
+      _this7.onChange(selectValue.slice(0, selectValue.length - 1), {
         action: 'pop-value',
         removedValue: lastSelectedValue
       });
@@ -4003,7 +4021,10 @@
       } else if (!_this7.props.menuIsOpen) {
         _this7.openMenu('first');
       } else {
-        _this7.onMenuClose();
+        // $FlowFixMe HTMLElement type does not have tagName property
+        if (event.target.tagName !== 'INPUT') {
+          _this7.onMenuClose();
+        }
       }
       // $FlowFixMe HTMLElement type does not have tagName property
       if (event.target.tagName !== 'INPUT') {
@@ -4153,6 +4174,10 @@
     };
 
     this.onInputBlur = function (event) {
+      if (_this7.menuListRef && _this7.menuListRef.contains(document.activeElement)) {
+        _this7.inputRef.focus();
+        return;
+      }
       if (_this7.props.onBlur) {
         _this7.props.onBlur(event);
       }
@@ -4219,13 +4244,18 @@
           if (!isMulti || inputValue) return;
           _this7.focusValue('next');
           break;
+        case 'Delete':
         case 'Backspace':
           if (inputValue) return;
           if (focusedValue) {
             _this7.removeValue(focusedValue);
           } else {
             if (!backspaceRemovesValue) return;
-            _this7.popValue();
+            if (isMulti) {
+              _this7.popValue();
+            } else if (isClearable) {
+              _this7.clearValue();
+            }
           }
           break;
         case 'Tab':
@@ -4472,7 +4502,7 @@
 
         _this.state = {
           defaultOptions: Array.isArray(props.defaultOptions) ? props.defaultOptions : undefined,
-          inputValue: '',
+          inputValue: props.inputValue,
           isLoading: props.defaultOptions === true ? true : false,
           loadedOptions: [],
           passEmptyOptions: false
@@ -4487,9 +4517,10 @@
 
           this.mounted = true;
           var defaultOptions = this.props.defaultOptions;
+          var inputValue = this.state.inputValue;
 
           if (defaultOptions === true) {
-            this.loadOptions('', function (options) {
+            this.loadOptions(inputValue, function (options) {
               if (!_this2.mounted) return;
               var isLoading = !!_this2.lastRequest;
               _this2.setState({ defaultOptions: options || [], isLoading: isLoading });
